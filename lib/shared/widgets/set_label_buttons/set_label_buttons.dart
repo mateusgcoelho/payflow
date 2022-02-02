@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:payflow/shared/themes/app_colors.dart';
 import 'package:payflow/shared/themes/app_text_styles.dart';
 import 'package:payflow/shared/widgets/divider_vertical/divider_vertical_widget.dart';
 import 'package:payflow/shared/widgets/label_button/label_button.dart';
@@ -9,6 +10,7 @@ class SetLabelButtons extends StatelessWidget {
   final String secondaryLabel;
   final VoidCallback secondaryOnPressed;
   final bool enablePrimaryColor;
+  final bool enableSecondaryColor;
 
   const SetLabelButtons({
     Key? key,
@@ -17,26 +19,42 @@ class SetLabelButtons extends StatelessWidget {
     required this.secondaryLabel,
     required this.secondaryOnPressed,
     this.enablePrimaryColor = false,
+    this.enableSecondaryColor = false,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 56,
-      child: Row(
+      height: 57,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
         children: [
-          Expanded(
-            child: LabelButton(
-              label: this.primaryLabel,
-              onPressed: this.primaryOnPressed,
-              style: enablePrimaryColor ? TextStyles.buttonPrimary : null,
-            ),
+          Divider(
+            height: 1,
+            thickness: 1,
+            color: AppColors.stroke,
           ),
-          DividerVerticalWidget(),
-          Expanded(
-            child: LabelButton(
-              label: this.secondaryLabel,
-              onPressed: this.secondaryOnPressed,
+          Container(
+            height: 56,
+            child: Row(
+              children: [
+                Expanded(
+                  child: LabelButton(
+                    label: this.primaryLabel,
+                    onPressed: this.primaryOnPressed,
+                    style: enablePrimaryColor ? TextStyles.buttonPrimary : null,
+                  ),
+                ),
+                DividerVerticalWidget(),
+                Expanded(
+                  child: LabelButton(
+                    label: this.secondaryLabel,
+                    onPressed: this.secondaryOnPressed,
+                    style:
+                        enableSecondaryColor ? TextStyles.buttonPrimary : null,
+                  ),
+                ),
+              ],
             ),
           ),
         ],
