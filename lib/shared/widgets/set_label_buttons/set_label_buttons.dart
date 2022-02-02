@@ -25,6 +25,7 @@ class SetLabelButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
+      color: AppColors.background,
       height: 57,
       child: Column(
         mainAxisSize: MainAxisSize.min,

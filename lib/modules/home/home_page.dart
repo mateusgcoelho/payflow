@@ -1,26 +1,22 @@
-import "package:flutter/material.dart";
+import 'package:flutter/material.dart';
+import 'package:payflow/modules/extract/extract_page.dart';
 import 'package:payflow/modules/home/home_controller.dart';
+import 'package:payflow/modules/meus_boletos/meus_boletos_page.dart';
+import 'package:payflow/shared/models/user_model.dart';
 import 'package:payflow/shared/themes/app_colors.dart';
 import 'package:payflow/shared/themes/app_text_styles.dart';
 
 class HomePage extends StatefulWidget {
-  const HomePage({Key? key}) : super(key: key);
+  final UserModel user;
+  const HomePage({Key? key, required this.user}) : super(key: key);
 
   @override
   _HomePageState createState() => _HomePageState();
 }
 
 class _HomePageState extends State<HomePage> {
-  final HomeController homeController = HomeController();
-  final pages = [
-    Container(
-      color: Colors.red,
-    ),
-    Container(
-      color: Colors.blue,
-    ),
-  ];
-
+  final controller = HomeController();
+  final pages = [MeusBoletosPage(), ExtractPage()];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -33,58 +29,59 @@ class _HomePageState extends State<HomePage> {
             child: ListTile(
               title: Text.rich(
                 TextSpan(
-                  text: "Olá, ",
-                  style: TextStyles.titleRegular,
-                  children: [
-                    TextSpan(
-                      text: "Gabul",
-                      style: TextStyles.titleBoldBackground,
-                    ),
-                  ],
-                ),
+                    text: "Olá, ",
+                    style: TextStyles.titleRegular,
+                    children: [
+                      TextSpan(
+                          text: "${widget.user.name}",
+                          style: TextStyles.titleBoldBackground)
+                    ]),
               ),
               subtitle: Text(
-                "Mantenham suas contas em dia",
+                "Mantenha suas contas em dia",
                 style: TextStyles.captionShape,
               ),
               trailing: Container(
                 height: 48,
                 width: 48,
                 decoration: BoxDecoration(
-                  color: Colors.black,
-                  borderRadius: BorderRadius.circular(5),
-                ),
+                    color: Colors.black,
+                    borderRadius: BorderRadius.circular(5),
+                    image: DecorationImage(
+                        image: NetworkImage(widget.user.photoURL!))),
               ),
             ),
           ),
         ),
       ),
+      body: pages[controller.currentPage],
       bottomNavigationBar: Container(
         height: 90,
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             IconButton(
-              icon: Icon(
-                Icons.home,
-                color: AppColors.primary,
-              ),
-              onPressed: () {
-                homeController.setPage(0);
-                setState(() {});
-              },
-            ),
+                onPressed: () {
+                  controller.setPage(0);
+                  setState(() {});
+                },
+                icon: Icon(
+                  Icons.home,
+                  color: controller.currentPage == 0
+                      ? AppColors.primary
+                      : AppColors.body,
+                )),
             GestureDetector(
-              onTap: () {
-                Navigator.pushNamed(context, "/barcode_scanner");
+              onTap: () async {
+                await Navigator.pushNamed(context, "/barcode_scanner");
+                setState(() {});
               },
               child: Container(
                 width: 56,
                 height: 56,
                 decoration: BoxDecoration(
-                  color: AppColors.primary,
-                  borderRadius: BorderRadius.circular(5),
-                ),
+                    color: AppColors.primary,
+                    borderRadius: BorderRadius.circular(5)),
                 child: Icon(
                   Icons.add_box_outlined,
                   color: AppColors.background,
@@ -92,19 +89,19 @@ class _HomePageState extends State<HomePage> {
               ),
             ),
             IconButton(
-              onPressed: () {
-                homeController.setPage(1);
-                setState(() {});
-              },
-              icon: Icon(
-                Icons.description_outlined,
-                color: AppColors.body,
-              ),
-            ),
+                onPressed: () {
+                  controller.setPage(1);
+                  setState(() {});
+                },
+                icon: Icon(
+                  Icons.description_outlined,
+                  color: controller.currentPage == 1
+                      ? AppColors.primary
+                      : AppColors.body,
+                ))
           ],
         ),
       ),
-      body: pages[homeController.currentPage],
     );
   }
 }
